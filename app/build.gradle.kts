@@ -2,6 +2,9 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.jetbrains.kotlin.android)
     alias(libs.plugins.google.gms.google.services)
+    id("com.google.dagger.hilt.android")
+    id("kotlin-kapt")
+    id("kotlin-parcelize")
 }
 
 android {
@@ -20,19 +23,22 @@ android {
             useSupportLibrary = true
         }
     }
-
+    tasks.withType<Test> {
+        useJUnitPlatform()
+    }
     buildTypes {
         release {
-            isMinifyEnabled = false
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
+            signingConfig = signingConfigs.getByName("debug")
         }
     }
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8
+        isCoreLibraryDesugaringEnabled = true
     }
     kotlinOptions {
         jvmTarget = "1.8"
@@ -61,6 +67,24 @@ dependencies {
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
     implementation(libs.firebase.auth)
+    implementation(libs.androidx.lifecycle.viewmodel.compose)
+    implementation(libs.androidx.lifecycle.runtime.compose)
+    implementation (libs.androidx.credentials)
+    implementation (libs.androidx.credentials.play.services.auth)
+    implementation (libs.play.services.auth)
+    implementation (libs.googleid)
+    implementation(libs.androidx.navigation.compose)
+    implementation(libs.hilt.android)
+    implementation(libs.androidx.hilt.navigation.compose)
+    testImplementation(libs.junit.jupiter)
+    kapt(libs.hilt.android.compiler)
+    implementation (libs.retrofit)
+    implementation (libs.converter.gson)
+    implementation(libs.logging.interceptor)
+    implementation(libs.androidx.datastore.preferences)
+    coreLibraryDesugaring(libs.desugar.jdk.libs)
+
+
     testImplementation(libs.junit.jupiter.api)
     androidTestImplementation(libs.junit.jupiter.api)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -68,4 +92,8 @@ dependencies {
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
+    testImplementation(libs.mockk.android)
+    testImplementation(libs.mockk.agent)
+    testImplementation(libs.truth)
+
 }
